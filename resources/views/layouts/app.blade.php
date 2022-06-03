@@ -47,8 +47,6 @@
 
         @stack('modals')
 
-        
-      
       
     </body>
 </html>

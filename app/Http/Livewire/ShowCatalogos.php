@@ -27,12 +27,11 @@ class ShowCatalogos extends Component
     public $filtro= '';
     public $filtrocolor='';
 
-    public function updatingSearch()
+    public function updatingBusq()
     {
         $this->resetPage();
     }
 
-  
 
     public function filtroCategoria($categoria){
         if ($this->filtro==$categoria)
@@ -49,23 +48,20 @@ class ShowCatalogos extends Component
 
     public function render()
     {
-        $colores = Prenda::select('color_prenda')->distinct()->get();
         $categorias = Prenda::select('categoria')->distinct()->get();
 
-      
-            if (empty($this->filtro)) {
-                $prendas = Prenda::where('descripcion', 'like', '%' . $this->busqueda . '%')  
+        if (empty($this->filtro)) {
+                $prendas = Prenda::where('descripcion', 'like', '%' . $this->busqueda . '%')
+                                ->orWhere('color_prenda','like','%' . $this->busqueda . '%')
                                 ->paginate(12);
             }
             else {
                 $prendas = Prenda::where('descripcion', 'like', '%' . $this->busqueda . '%')
                                 ->where('categoria', $this->filtro)
+                                ->orWhere('color_prenda', $this->busqueda)
                                 ->paginate(12);
             }
-        
        
-        
-
-        return view('livewire.show-catalogos', compact('prendas', 'categorias','colores'));
+        return view('livewire.show-catalogos', compact('prendas', 'categorias'));
     }
 }

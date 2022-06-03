@@ -4,29 +4,32 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Prenda;
-
+use App\Models\Talla;
 
 class ShowPrenda extends Component
 {
-    public $prenda;
+    public $prenda, $talla;
     public $open = false;
     
-    public function setClose()
-    {
-        $this->open = false;
+
+    protected $rules = [
+        'prenda.material_prenda'=> 'required',
+        'prenda.color_prenda'=> 'required',
+        'prenda.stock_prenda'=> 'required',
+        'prenda.precio_prenda'=> 'required',
+        'prenda.descripcion' => 'required',
+        'prenda.img'=> 'required|image',
+    ];
+
+    public function mount(Prenda $prenda){
+        $this->prenda = $prenda;
+        $this->talla = Talla::where('id_talla', $prenda->id_talla)->first();
+        
     }
 
-    public function setOpen()
-    {
-        $this->open = true;
-    }
-
-    
 
     public function render()
     {
-        
-        
-        return view('livewire.show-prenda');
+         return view('livewire.show-prenda');
     }
 }
