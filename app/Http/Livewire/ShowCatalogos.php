@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Prenda;
 use Livewire\Component;
 use Livewire\WithPagination;
-
+use Illuminate\Support\Facades\DB;
 
 
 class ShowCatalogos extends Component
@@ -26,6 +26,9 @@ class ShowCatalogos extends Component
     public $busqueda;
     public $filtro= '';
     public $filtrocolor='';
+    public $take=16;
+    
+
 
     public function updatingBusq()
     {
@@ -33,7 +36,14 @@ class ShowCatalogos extends Component
     }
 
 
+    public function loadmore(){
+        $this->take+=8;
+    }
+
+
     public function filtroCategoria($categoria){
+        
+        $this->take=16;
         if ($this->filtro==$categoria)
         {
             $this->filtro='';
@@ -42,26 +52,34 @@ class ShowCatalogos extends Component
         {
             $this->filtro=$categoria;
         }
+        
     }
 
    
+    
 
     public function render()
     {
         $categorias = Prenda::select('categoria')->distinct()->get();
+        
+        $prendas = Prenda::take($this->take)->orWhere('descripcion', 'like', "%$this->busqueda%")->get();
+        //$prendas = Prenda::select()->orWhere('descripcion', 'like', "%$this->busqueda%")->paginate(16);
+        
+        if(!empty($this->filtro)){
+            $prendas = Prenda::take($this->take)
+                        ->where('categoria', 'like', "%$this->filtro%")
+                        ->where('descripcion', 'like', "%$this->busqueda%")
+                        ->get();
+        }
+        
+        $count = $prendas->count();
 
-        if (empty($this->filtro)) {
-                $prendas = Prenda::where('descripcion', 'like', '%' . $this->busqueda . '%')
-                                ->orWhere('color_prenda','like','%' . $this->busqueda . '%')
-                                ->paginate(12);
-            }
-            else {
-                $prendas = Prenda::where('descripcion', 'like', '%' . $this->busqueda . '%')
-                                ->where('categoria', $this->filtro)
-                                ->orWhere('color_prenda', $this->busqueda)
-                                ->paginate(12);
-            }
-       
-        return view('livewire.show-catalogos', compact('prendas', 'categorias'));
+
+        return view('livewire.show-catalogos', compact(
+            'prendas',
+            'categorias',
+            'count'
+        ));
     }
 }
+

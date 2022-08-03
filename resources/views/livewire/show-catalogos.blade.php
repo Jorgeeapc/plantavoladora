@@ -1,53 +1,69 @@
 <div>
-
-  {{-- busqueda & filtrado--}}
-  <div class='relative max-w-2xl max-h-0 mx-auto px-4 sm:py-2 sm:px-6 lg:max-w-7xl lg:px-2'>
+  <div class="flex row-span-2 px-4 mb-4">
+    {{-- busqueda & filtrado--}}
+    <div class='px-2 py-6'>
     
-    <div class="mt-4 ml-3 flex max-w-min gap-x-6">
-      <x-jet-input type='text' wire:model='busqueda' placeholder='Busqueda'/>
-      @if ($prendas->isEmpty())
-        <h1>No se encontraron resultados</h1>   
+      <div class="px-2 py-2">
+        <x-jet-input type='text' wire:model='busqueda' placeholder='Búsqueda'/>
+
+        <div class="mt-2">
+          @if (!empty($busqueda))
+            <h1>Buscando "{{$busqueda}}" en descripción de los articulos</h1> 
+          @endif
+        </div>
+
+        <div class="mt-2">
+          @if ($prendas->isEmpty())
+              <h1 >No se encontraron resultados</h1>   
+          @endif
+        </div>
+      </div>
+
+      <div class="grid py-2">
+        @foreach ($categorias as $categoria)
+          <x-jet-button wire:click="filtroCategoria('{{$categoria->categoria}}')">{{$categoria->categoria}}</x-jet-button>
+        @endforeach
+      </div>
+
+    </div>
+
+
+    <div class="grid py-2 px-2">
+    
+      {{-- catálogo --}}
+     
+      <div class="grid  gap-y-10 gap-x-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-x-8">
+        
+        {{-- recorrido de la coleccion --}}
+        @foreach ($prendas as $prenda)
+            
+          @if (empty($prendas))
+            <h1>No se encontraron resultados</h1>   
+          @endif
+          {{-- Tarjeta de producto --}}
+          @livewire('show-prenda', ['prenda' => $prenda], key($prenda->id_prenda))
+            
+        @endforeach
+          
+      </div>
+        
+      @if ($this->take <= $count)
+        <div>
+          <x-jet-button wire:click="loadmore()">Cargar más</x-jet-button>
+        </div>
       @endif
-    </div>
+        
 
-    <div class="mt-1 flex max-w-min gap-x-6">
-      @foreach ($categorias as $categoria)
-        <x-jet-button wire:click="filtroCategoria('{{$categoria->categoria}}')">{{$categoria->categoria}}</x-jet-button>
-      @endforeach
-    </div>
-     
-  
-  </div>
-
-  {{-- catálogo --}}
-  <div class="relative max-w-2xl mx-auto py-2 px-4 sm:py-12 sm:px-6 lg:max-w-7xl lg:px-8">
-
-    {{-- Columnas --}}
-    <div class="grid gap-y-10 gap-x-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-x-8">
-    
-      {{-- recorrido de la coleccion --}}
-     
-      @foreach ($prendas as $prenda)
-
-        @if (empty($prendas))
-          <h1>No se encontraron resultados</h1>   
+        {{-- Paginacion 
+        @if ($prendas->hasPages())
+          <div class="py-6">
+            {{$prendas->links()}}
+          </div>  
         @endif
-        {{-- Tarjeta de producto --}}
-        @livewire('show-prenda', ['prenda' => $prenda], key($prenda->id_prenda))
-        
-      @endforeach
-      
+        --}}
+
     </div>
-        
-    {{-- Paginacion --}}
-    @if ($prendas->hasPages())
-      <div class="py-6">
-        {{$prendas->links()}}
-      </div>  
-    @endif
-       
-  </div>
-  
-@livewireScripts
-  
+    
+    @livewireScripts
+  </div>  
 </div>

@@ -18,16 +18,14 @@
 
         <!-- Scripts -->
        
-        <script src="{{ asset('js/app.js') }}" defer ></script>
-        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-
+        <script defer src="{{ asset('js/app.js') }}"  ></script>
+    
         
     </head>
     <body class="font-sans antialiased">
         <x-jet-banner />
 
-        <div class="min-h-screen bg-gray-100">
+        <div class="max-h-full bg-white-100">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
@@ -38,10 +36,10 @@
                     </div>
                 </header>
             @endif
-
+                
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+               {{ $slot }}
             </main>
         </div>
 
