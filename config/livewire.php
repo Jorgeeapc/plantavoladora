@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'asset_url' => '/planta/public',
+    'asset_url' => '/plantavoladora/public',
 
     /*
     |--------------------------------------------------------------------------
@@ -68,7 +68,7 @@ return [
     |
     */
 
-    'app_url' => '/planta/public',
+    'app_url' => '/plantavoladora/public',
 
     /*
     |--------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 
         <div class="mt-2">
           @if (!empty($busqueda))
-            <h1>Buscando "{{$busqueda}}" en descripción de los articulos</h1> 
+            <h1>Buscando "{{$busqueda}}" en descripción de los artículos</h1> 
           @endif
         </div>
 
@@ -19,9 +19,11 @@
         </div>
       </div>
 
-      <div class="grid py-2">
+      <div class="grid py-2 px-2">
         @foreach ($categorias as $categoria)
-          <x-jet-button wire:click="filtroCategoria('{{$categoria->categoria}}')">{{$categoria->categoria}}</x-jet-button>
+          <div class="py-2">
+            <x-jet-button wire:click="filtroCategoria('{{$categoria->categoria}}')">{{$categoria->categoria}}</x-jet-button>
+          </div>
         @endforeach
       </div>
 
