@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'asset_url' => null,
+    'asset_url' => '/plantavoladora/public',
 
     /*
     |--------------------------------------------------------------------------
@@ -68,7 +68,7 @@ return [
     |
     */
 
-    'app_url' => 'https://plantavoladora.herokuapp.com',
+    'app_url' => '/plantavoladora/public',
 
     /*
     |--------------------------------------------------------------------------

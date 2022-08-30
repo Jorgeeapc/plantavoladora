@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\ShowCatalogos;
+use App\Http\Livewire\ShowPrenda;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +16,12 @@ use App\Http\Livewire\ShowCatalogos;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.register');
 });
+
+Route::get('/registro', function () {
+    return view('auth.register');
+})->name('registro');
 
 Route::middleware([
     'auth:sanctum',
@@ -24,5 +29,13 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('/dashboard', ShowCatalogos::class)->name('dashboard');
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/livewire.show-prenda', ShowPrenda::class)->name('carrito');
 });
 
