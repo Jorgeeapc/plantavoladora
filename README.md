@@ -86,10 +86,12 @@ mysql
 ```
 - Crear base de datos
 
+Se debe ingresar credenciales en los espacios 'usuario' y 'contraseña'
+
 ```bash
 CREATE DATABASE plantavoladora;
-CREATE USER 'G50taller'@'localhost' IDENTIFIED BY 'G50taller1049';
-GRANT ALL PRIVILEGES ON * . * TO 'G50taller'@'localhost';
+CREATE USER 'usuario'@'localhost' IDENTIFIED BY 'contraseña';
+GRANT ALL PRIVILEGES ON * . * TO 'usuario'@'localhost';
 FLUSH PRIVILEGES;
 exit
 ```
