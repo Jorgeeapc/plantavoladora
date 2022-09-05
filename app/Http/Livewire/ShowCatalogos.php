@@ -6,45 +6,77 @@ use App\Models\Prenda;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Talla;
-
-
+use App\Models\Compra;
+use Carbon\Carbon;
+use App\Models\Comprasprenda;
+use App\Models\Pedido;
+use Livewire\Livewire;
 
 class ShowCatalogos extends Component
 {
     use WithPagination;
 
     protected $rules = [
-           'id_prenda'=>'required',
-           'material_prenda'=> 'required',
-           'color_prenda'=> 'required',
-           'stock_prenda'=> 'required',
-           'precio_prenda'=> 'required',
-           'descripcion' => 'required',
-           'img'=> 'required|image'
+           'cintura'=>'required',
+           'hombros'=>'required',
+           'busto'=>'required',
+            'telefono'=>'required|max:9|min:9',
+            'comentarios'=>'required|max:100'
        ];
 
     
+    // Busqueda
     public $busqueda;
+
+    // Detalle del productos mostrado en modal 
     public $prenda_descripcion, $prenda_precio, $prenda_material, $prenda_categoria, $prenda_color, $prenda_stock, $prenda_imagen;
+    //Detalles de medidas mostrados en modal
     public $talla_cintura, $talla_hombros, $talla_busto;
+
+    // Para manejar listado se prendas segun categoria
     public $filtro= '';
-    public $filtrocolor='';
+
+    // Se muestran 16 prendas en catalogo, el numero aumenta con el boton mostrar mas
     public $take=16;
-    public $open=false;
+
+    // Abrir y cerrar modal prenda
+    public $open=false, $open_medida=false;
+
+    // Articulo que se agrega al carrito
+    public $articulo, $id_prenda;
+
+    public $cantidad=1;
+
+    public $carrito='';
+
+    // Información pedido a medida
+    public $cintura, $busto, $hombros, $comentarios, $telefono;
     
 
-    public function updatingBusq()
-    {
-        $this->resetPage();
+    public function mount(){
+        $user = auth()->user();
+        $this->carrito = Compra::where('id_cliente', $user->id)->first();
+
+        if (empty($this->carrito)) {
+            $carrito = new Compra();
+            $carrito->fecha_compra=Carbon::now();
+            $carrito->valor_compra=0;
+            $carrito->compra_fecha_estado=Carbon::now();
+            $carrito->id_estado=2;
+            $carrito->id_cliente=$user->id;
+            $carrito->save();
+           
+        }
     }
 
-    
+    public function updatingBusq(){
+        $this->resetPage();
+    }
 
     public function loadmore(){
         $this->take+=8;
     }
 
-   
 
     public function filtroCategoria($categoria){
         
@@ -62,7 +94,7 @@ class ShowCatalogos extends Component
 
     public function mostrar_prenda($id){
        
-
+        $this->id_prenda=$id;
         $this->prenda_descripcion=Prenda::select('descripcion')->where('id_prenda',$id)->value('descripcion');
         $this->prenda_precio=Prenda::select('precio_prenda')->where('id_prenda',$id)->value('precio_prenda');
         $this->prenda_material=Prenda::select('material_prenda')->where('id_prenda',$id)->value('material_prenda');
@@ -77,9 +109,117 @@ class ShowCatalogos extends Component
         $this->open=true;
     }
 
-    public function close(){
-        $this->open=false;
+    public function agregar_carrito(){
+        
+        $prenda = Prenda::where('id_prenda', $this->id_prenda)->first();
+
+        $user = auth()->user();
+        $carrito = Compra::where('id_cliente', $user->id)->where('id_estado', 2)->first();
+        
+        if (empty($carrito)) {
+            $carrito = new Compra();
+            $carrito->fecha_compra=Carbon::now();
+            $carrito->valor_compra=0;
+            $carrito->compra_fecha_estado=Carbon::now();
+            $carrito->id_estado=2;
+            $carrito->id_cliente=$user->id;
+            $carrito->save();
+            $this->carrito=$carrito;
+        }
+
+        $compra = Comprasprenda::where('id_compra', $carrito->id_compra)->where('id_prenda', $prenda["id_prenda"])->get();
+        
+        if (empty($compra[0])) {
+            $item = new Comprasprenda();
+            $item->cantidad= $this->cantidad;
+            $item->precio_total = (int)$this->cantidad*(int)$prenda->precio_prenda;
+            $item->id_compra = $carrito->id_compra;
+            $item->id_prenda = $prenda->id_prenda;
+            $item->save();
+            $this->open = false;
+            session()->flash('message', 'Producto agregado al carrito.');
+        }
+        else {
+            $compra = Comprasprenda::where('id_compra', $carrito->id_compra)->where('id_prenda', $prenda["id_prenda"])->update(['cantidad'=>$this->cantidad]);
+            $this->open = false;
+            return("Este producto ya se encuentra en tu carrito. Se actualizó la cantidad");
+        }
+
+        
+
+        
     }
+
+    public function agregar_medida(){
+        $prenda = Prenda::where('id_prenda', $this->id_prenda)->first();
+
+        $user = auth()->user();
+        $carrito = Compra::where('id_cliente', $user->id)->where('id_estado', 2)->first();
+        
+        if (empty($carrito)) {
+            $carrito = new Compra();
+            $carrito->fecha_compra=Carbon::now();
+            $carrito->valor_compra=0;
+            $carrito->compra_fecha_estado=Carbon::now();
+            $carrito->id_estado=2;
+            $carrito->id_cliente=$user->id;
+            $carrito->save();
+            $this->carrito=$carrito;
+        }
+
+        $compra = Comprasprenda::where('id_compra', $carrito->id_compra)->where('id_prenda', $prenda["id_prenda"])->get();
+        
+        $this->validate([
+            'cintura'=>'required',
+           'hombros'=>'required',
+           'busto'=>'required',
+            'telefono'=>'required|max:9|min:9',
+            'comentarios'=>'required|max:100'
+        ]);
+
+        if (empty($compra[0])) {
+            $item = new Comprasprenda();
+            $item->cantidad= $this->cantidad;
+            $item->precio_total = (int)$this->cantidad*(int)$prenda->precio_prenda;
+            $item->id_compra = $carrito->id_compra;
+            $item->id_prenda = $prenda->id_prenda;
+            $item->save();
+            
+           
+
+                $amedida = new Pedido();
+                $amedida->id_prenda=$this->id_prenda;
+                $amedida->id_cliente=$user->id;
+                $amedida->cintura=$this->cintura;
+                $amedida->largo=$this->hombros;
+                $amedida->busto=$this->busto;
+                $amedida->telefono=$this->telefono;
+                $amedida->comentarios=$this->comentarios;
+                $amedida->cantidad=$this->cantidad;
+                $amedida->id_estado=2;
+                $amedida->save();
+
+                
+            $this->open_medida = false;
+            
+        }
+        else {
+            $compra = Comprasprenda::where('id_compra', $carrito->id_compra)->where('id_prenda', $prenda["id_prenda"])->update(['cantidad'=>$this->cantidad]);
+            $this->open = false;
+            
+        }
+
+    }
+
+   public function pedir_medida(){
+        $this->open=false;
+        $this->open_medida=true;    
+   }
+
+   public function volver(){
+        $this->open=true;
+        $this->open_medida=false;
+   }
 
     public function render()
     {
@@ -96,7 +236,7 @@ class ShowCatalogos extends Component
         }
         
         $count = $prendas->count();
-
+        
 
         return view('livewire.show-catalogos', compact(
             'prendas',

@@ -19,7 +19,8 @@
         <!-- Scripts -->
        
         <script defer src="{{ asset('js/app.js') }}"  ></script>
-        <script src="sweetalert2.all.min.js"></script>
+    
+        
     
         
     </head>
@@ -46,6 +47,5 @@
 
         @stack('modals')
 
-      
     </body>
 </html>

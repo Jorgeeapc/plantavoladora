@@ -1,9 +1,12 @@
 <div>
     <div class="container group relative cursor-pointer">
         
-        <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 sm:h-30 md:h-30 lg:h-40 lg:aspect-none">
-            <img src={{$prenda->img}} alt="imagen" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
-        </div>
+       
+            <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 sm:h-30 md:h-30 lg:h-40 lg:aspect-none">
+                <img src={{$prenda->img}} alt="imagen" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
+            </div>
+       
+        
 
         <div class="mt-4 justify-between">
        

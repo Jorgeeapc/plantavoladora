@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use GuzzleHttp\Promise\Create;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Estado;
 
 class EstadoFactory extends Factory
 {
@@ -13,8 +15,8 @@ class EstadoFactory extends Factory
      */
     public function definition()
     {
-        return [
-            'estado' =>$this->faker->word(),
-        ];
+       
+
+      
     }
 }

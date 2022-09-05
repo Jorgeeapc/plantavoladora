@@ -36,6 +36,6 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/livewire.show-prenda', ShowPrenda::class)->name('carrito');
+    Route::get('/carrito', ShowPrenda::class)->name('carrito');
 });
 

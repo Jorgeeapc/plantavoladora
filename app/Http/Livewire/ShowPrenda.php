@@ -3,33 +3,69 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
+use App\Models\Compra;
+use App\Models\Comprasprenda;
 use App\Models\Prenda;
-use App\Models\Talla;
+use Carbon\Carbon;
+use Exception;
 
 class ShowPrenda extends Component
 {
-    public $prenda, $talla;
-    public $open = false;
-    
+    public $carrito, $prendas, $eliminar, $total=0;
+    public $pagar;
 
-    protected $rules = [
-        'prenda.material_prenda'=> 'required',
-        'prenda.color_prenda'=> 'required',
-        'prenda.stock_prenda'=> 'required',
-        'prenda.precio_prenda'=> 'required',
-        'prenda.descripcion' => 'required',
-        'prenda.img'=> 'required|image',
-    ];
 
-    public function mount(Prenda $prenda){
-        $this->prenda = $prenda;
-        $this->talla = Talla::where('id_talla', $prenda->id_talla)->first();
+    public function cantidad($cantidad, $prenda){
+       $this->total = 'gola';
+        
+    }                                                   
+
+    public function eliminar_articulo($prenda){
+        $user = auth()->user();
+      
+        $compra = Compra::where('id_cliente',$user->id)->where('id_estado', 2)->first();
+        $this->eliminar = Comprasprenda::where('id_compra', $compra->id_compra)->where('id_prenda', $prenda["id_prenda"])->first();
+        $this->eliminar->delete();
         
     }
 
+    public function sumar_totales($total){
+        $this->total= $this->total+$total;
+    }
 
-    public function render()
-    {
-         return view('livewire.show-prenda');
+    public function pagar($prendas, $total){
+        $user = auth()->user();
+        $compra = Compra::where('id_cliente',$user->id)->where('id_estado', 2)->update(['id_estado'=>1, 'valor_compra'=>$total]);
+
+
+        foreach ($prendas as $prenda) {
+            $cantidad = Prenda::select('stock_prenda')->where('id_prenda', $prenda["id_prenda"])->first();
+            $c = Prenda::where('id_prenda', $prenda["id_prenda"])->update(['stock_prenda'=>$cantidad->stock_prenda-(int)$prenda["cantidad"]]);
+            $pagar=$cantidad;
+        }       
+
+       
+    }
+
+    public function render(){
+        $user = auth()->user();
+        $carrito = Compra::where('id_cliente',$user->id)->where('id_estado', 2)->first();
+       
+        if (empty($carrito)) {
+            $carrito = new Compra();
+            $carrito->fecha_compra=Carbon::now();
+            $carrito->valor_compra=0;
+            $carrito->compra_fecha_estado=Carbon::now();
+            $carrito->id_estado=2;
+            $carrito->id_cliente=$user->id;
+            $carrito->save();
+            $this->carrito=$carrito;
+        } 
+       
+        $this->prendas = Comprasprenda::where('id_compra', $carrito->id_compra)->join('prendas', 'comprasprendas.id_prenda', '=', 'prendas.id_prenda')->get();       
+        
+  
+
+        return view('livewire.show-prenda');
     }
 }

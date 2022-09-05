@@ -16,9 +16,9 @@ El estilo de código de este proyecyo debe seguir las recomendaciones de los est
 
 ### Configuraciones para editores de código
 
-- Final/Salto de Línea (EOL - End of Line ) = LF,CRLF
-- Codificación de Archivos de Código (Encoding - Charset) = UTF-8, ISO-8859-1
-- Tabulación =
+- Final/Salto de Línea (EOL - End of Line ) = CRLF
+- Codificación de Archivos de Código (Encoding - Charset) = UTF-8
+- Tabulación = 4 espacios
 
 ### Editor config
 

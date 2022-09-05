@@ -7,20 +7,29 @@ Sistema de catálogo, venta y solicitud de confección a medida para la tienda d
 El proyecto Planta Voladora es una aplicación que corre sobre el siguiente software:
 
 - Ubuntu 20.04
-- Apache
-- Php 7.4 (apache2, mysql-server,npm, git, curl, libxml2-dev, libonig-dev, libpng-dev, zip, unzip)
-- Composer
+- Apache 2.4.41 (Ubuntu)
+- Php 7.4.3 (mysql-server,npm, git, curl, libxml2-dev, libonig-dev, libpng-dev, zip, unzip)
+- Composer 2.4.1
 - Framework Php Laravel 8.83
-- NodeJS
-- Base de datos Mysql
+- NodeJS 10.19
+- Mysql 8.0.30
 
-## Configuraciones de ejecución para entorno de Desarrollo/Producción
+## Configuraciones de ejecución para entorno de Desarrollo
 
 Para obetener una copia del proyecto y ejecutarlo locamente se deben seguir los siguiente pasos
 
+### Clonar repositorio
+
+- Dirigirse a la ruta en la que se va a copiar el proyecto
+- En una consola ingresar los siguientes comandos
+
+```bash
+git clone https://github.com/Jorgeeapc/plantavoladora.git
+```
+
 ### Credenciales de base de datos y variables de entorno
 
-- Editar el archivo /.env ingresando las credenciales correspondientes en las variables DB_USERNAME y DB_PASSWORD (la variables se crean junto a la BD)
+- Editar el archivo /.env ingresando en las variables DB_USERNAME y DB_PASSWORD valores que luego serán usados al crear la base de datos
 
 ### Docker, Máquina virtual y sistema operativo
 
@@ -33,7 +42,7 @@ docker build -t nombredelaimagen .
 - Construir el contenedor
 
 ```bash
-docker run -ti -d -p 80:80 --name nombredelcontenedor -v "c:\ruta del proyecto:/var/www/html/plantavoladora" nombredelaimagen
+docker run -ti -d -p 80:80 --name nombredelcontenedor -v "PATH del proyecto:/var/www/html/plantavoladora" nombredelaimagen
 ```
 
 ### Instalar dependencias del proyecto e iniciar servicios
@@ -54,24 +63,23 @@ Una vez dentro del contenedor (en la bash)
  - Configurar archivo 000-default.conf
 
 ```bash
-apt install nano
 nano /etc/apache2/sites-available/000-default.conf
 ```
 - Una vez abierto el archivo agregar las siguiente líneas dentro de los componentes <VirtualHost>
 
-<Directory /var/www/html/plantavoladora>
+<Directory /PATH>
     Options Indexes FollowSymLinks
     AllowOverride All
     Require all granted
 </Directory>
 
-- Guardar los cambios con ctrl+o y ctrl+c para salir
-
 - Activar rewrite de apache2 y recargar servicio 
 
+- En caso de cerrarse la bash de este contenedor al reiniciar apache se deben ejecutar los siguientes comandos
+
 ```bash
-a2enmod rewrite
-service apache2 restart
+docker start nombredelcontenedor
+winpty docker exec -ti nombredelcontenedor bash
 ```
 
 -Iniciar servicio mysql
@@ -86,7 +94,7 @@ mysql
 ```
 - Crear base de datos
 
-Se debe ingresar credenciales en los espacios 'usuario' y 'contraseña'
+Se debe ingresar credenciales en los espacios 'usuario' y 'contraseña', deben ser iguales a las antes ingresadas en el archi .env
 
 ```bash
 CREATE DATABASE plantavoladora;
@@ -95,6 +103,13 @@ GRANT ALL PRIVILEGES ON * . * TO 'usuario'@'localhost';
 FLUSH PRIVILEGES;
 exit
 ```
+
+- Instalar dependencias del fichero composer.json
+
+```bash
+composer update
+```
+
 - Poblar base de datos
 
 ```bash
@@ -102,9 +117,51 @@ cd /var/www/html/plantavoladora
 php artisan migrate --seed
 ```
 
+## Configuraciones de ejecución para entorno de Producción
+
+- Dentro de la consola dirigirse al directorion /var/www/html y clonar este repositorio
+- Ingresar a la carpeta creada 'plantavoladora'
+- Instalar dependencias del proyecto con Composer
+
+```bash
+composer update
+```
+- Otorgar permisos a directorio bootstap y storage
+
+```bash
+sudo chmod -R ugo+rw storage
+sudo chmod 777 bootstrap
+```
+- Desde este punto es necesario ingresar como super user
+
+- Editar archivo /.env ingresando en las variables siguientes, los valores entregados como credenciales
+    DB_HOST=
+    DB_PORT=
+    DB_DATABASE=
+    DB_USERNAME=
+    DB_PASSWORD=
+
+- Configurar archivo 000-default.conf
+
+```bash
+nano /etc/apache2/sites-available/000-default.conf
+```
+- Una vez abierto el archivo agregar las siguiente líneas dentro de los componentes <VirtualHost>
+
+<Directory /var/www/html/plantavoladora>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+
+- Activar rewrite de apache2 y recargar servicio 
+
 ## Contruido con
 
 - Laravel
+- Livewire
+- Jetstram
+- Tailwind
 
 ## Licencia
 

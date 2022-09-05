@@ -4,7 +4,7 @@ ENV TZ=America/Santiago
 RUN ln -sfn /usr/share/zoneinfo/$TZ /etc/localtime &&echo $TZ > /etc/timezone
 
 # Añadimos dependencias y utilidades interesantes al sistema como: git, curl, zip, ...:
-RUN apt-get update && apt-get install -y php7.4 php7.4-mysql php7.4-curl apache2 mysql-server nodejs npm
+RUN apt-get update && apt-get install -y php7.4 php7.4-mysql php7.4-curl php-xml apache2 mysql-server nodejs npm nano
     
 RUN apt-get update && apt-get install -y git
 

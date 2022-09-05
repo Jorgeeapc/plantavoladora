@@ -27,8 +27,14 @@ class DatabaseSeeder extends Seeder
          Regione::factory(15)->create();
          Comuna::factory(30)->create();
          User::factory(5)->create();
-         Estado::factory(5)->create();
-         Compra::factory(5)->create();
+         $estados=array("Listo","Pendiente");
+         foreach ($estados as $estado) {
+            Estado::create([
+                'estado'=> $estado
+            ]);
+         };
+        //  Estado::factory(5)->create();
+        //  Compra::factory(5)->create();
          Talla::factory(3)->create();
          Prenda::factory(40)->create();
     

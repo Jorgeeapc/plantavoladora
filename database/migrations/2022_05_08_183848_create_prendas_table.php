@@ -20,8 +20,10 @@ class CreatePrendasTable extends Migration
             $table->string('color_prenda');
             $table->integer('stock_prenda');
             $table->integer('precio_prenda');
-            $table->bigInteger('id_compra')->unsigned();
-            $table->foreign('id_compra')->references('id_compra')->on('compras')->onDelete('cascade');
+            $table->integer('precio_venta')->nullable();
+            $table->string('categoria');
+            $table->string('descripcion');
+            $table->string('img')->nullable();
             $table->bigInteger('id_talla')->unsigned();
             $table->foreign('id_talla')->references('id_talla')->on('tallas')->onDelete('cascade');
         });
