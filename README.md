@@ -130,13 +130,12 @@ composer update
 
 ```bash
 sudo chmod -R ugo+rw storage
-sudo chmod 777 bootstrap
+sudo chmod -R 777 bootstrap
 ```
 - Desde este punto es necesario ingresar como super user
 
 - Editar archivo /.env ingresando en las variables siguientes, los valores entregados como credenciales
     DB_HOST=
-    DB_PORT=
     DB_DATABASE=
     DB_USERNAME=
     DB_PASSWORD=
@@ -155,6 +154,8 @@ nano /etc/apache2/sites-available/000-default.conf
 </Directory>
 
 - Activar rewrite de apache2 y recargar servicio 
+
+- Correr migraciones
 
 ## Contruido con
 
