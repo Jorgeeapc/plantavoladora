@@ -18,7 +18,7 @@ class ShowCatalogos extends Component
 
     protected $rules = [
            'cintura'=>'required',
-           'hombros'=>'required',
+           'largo'=>'required',
            'busto'=>'required',
             'telefono'=>'required|max:9|min:9',
             'comentarios'=>'required|max:100'
@@ -50,7 +50,7 @@ class ShowCatalogos extends Component
     public $carrito='';
 
     // Información pedido a medida
-    public $cintura, $busto, $hombros, $comentarios, $telefono;
+    public $cintura, $busto, $largo, $comentarios, $telefono;
     
 
     public function mount(){
@@ -76,7 +76,6 @@ class ShowCatalogos extends Component
     public function loadmore(){
         $this->take+=8;
     }
-
 
     public function filtroCategoria($categoria){
         
@@ -137,12 +136,12 @@ class ShowCatalogos extends Component
             $item->id_prenda = $prenda->id_prenda;
             $item->save();
             $this->open = false;
-            session()->flash('message', 'Producto agregado al carrito.');
+            session()->flash('message', $prenda->descripcion.' agregado al carrito.');
         }
-        else {
+        else{
             $compra = Comprasprenda::where('id_compra', $carrito->id_compra)->where('id_prenda', $prenda["id_prenda"])->update(['cantidad'=>$this->cantidad]);
             $this->open = false;
-            return("Este producto ya se encuentra en tu carrito. Se actualizó la cantidad");
+            session()->flash('message', 'Este producto ya está en tu carrito. Se ha actualizado la cantidad');
         }
 
         
@@ -170,9 +169,9 @@ class ShowCatalogos extends Component
         $compra = Comprasprenda::where('id_compra', $carrito->id_compra)->where('id_prenda', $prenda["id_prenda"])->get();
         
         $this->validate([
-            'cintura'=>'required',
-           'hombros'=>'required',
-           'busto'=>'required',
+            'cintura'=>'required|min:2|max:3',
+           'largo'=>'required|min:2|max:3',
+           'busto'=>'required|min:2|max:3',
             'telefono'=>'required|max:9|min:9',
             'comentarios'=>'required|max:100'
         ]);
@@ -191,17 +190,22 @@ class ShowCatalogos extends Component
                 $amedida->id_prenda=$this->id_prenda;
                 $amedida->id_cliente=$user->id;
                 $amedida->cintura=$this->cintura;
-                $amedida->largo=$this->hombros;
+                $amedida->largo=$this->largo;
                 $amedida->busto=$this->busto;
                 $amedida->telefono=$this->telefono;
                 $amedida->comentarios=$this->comentarios;
                 $amedida->cantidad=$this->cantidad;
                 $amedida->id_estado=2;
+                $amedida->id_comprasprenda=$item->id;
                 $amedida->save();
 
-                
+                $this->cintura='';
+                $this->largo='';
+                $this->busto='';
+                $this->telefono='';
+                $this->comentarios='';
             $this->open_medida = false;
-            
+            session()->flash('message', $prenda->descripcion.' a medida agregado al carrito.');
         }
         else {
             $compra = Comprasprenda::where('id_compra', $carrito->id_compra)->where('id_prenda', $prenda["id_prenda"])->update(['cantidad'=>$this->cantidad]);

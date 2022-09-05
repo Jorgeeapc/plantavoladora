@@ -27,7 +27,9 @@ class CreatePedidosTable extends Migration
             $table->bigInteger('id_prenda')->unsigned();
             $table->foreign('id_prenda')->references('id_prenda')->on('prendas');
             $table->bigInteger('id_estado')->unsigned();
-            $table->foreign('id_estado')->references('id_estado')->on('estados')->onDelete('cascade');
+            $table->foreign('id_estado')->references('id_estado')->on('estados');
+            $table->bigInteger('id_comprasprenda')->unsigned();
+            $table->foreign('id_comprasprenda')->references('id')->on('comprasprendas');
         });
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Compra;
 use App\Models\Comprasprenda;
+use App\Models\Pedido;
 use App\Models\Prenda;
 use Carbon\Carbon;
 use Exception;
@@ -14,18 +15,17 @@ class ShowPrenda extends Component
     public $carrito, $prendas, $eliminar, $total=0;
     public $pagar;
 
-
-    public function cantidad($cantidad, $prenda){
-       $this->total = 'gola';
-        
-    }                                                   
-
     public function eliminar_articulo($prenda){
         $user = auth()->user();
       
         $compra = Compra::where('id_cliente',$user->id)->where('id_estado', 2)->first();
         $this->eliminar = Comprasprenda::where('id_compra', $compra->id_compra)->where('id_prenda', $prenda["id_prenda"])->first();
+        $pedido= Pedido::where('id_comprasprenda', $this->eliminar->id)->first();
+        if (!empty($pedido)) {
+            $pedido->delete();
+        }
         $this->eliminar->delete();
+        
         
     }
 
@@ -37,11 +37,12 @@ class ShowPrenda extends Component
         $user = auth()->user();
         $compra = Compra::where('id_cliente',$user->id)->where('id_estado', 2)->update(['id_estado'=>1, 'valor_compra'=>$total]);
 
+        
 
         foreach ($prendas as $prenda) {
             $cantidad = Prenda::select('stock_prenda')->where('id_prenda', $prenda["id_prenda"])->first();
             $c = Prenda::where('id_prenda', $prenda["id_prenda"])->update(['stock_prenda'=>$cantidad->stock_prenda-(int)$prenda["cantidad"]]);
-            $pagar=$cantidad;
+            
         }       
 
        

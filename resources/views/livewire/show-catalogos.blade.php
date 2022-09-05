@@ -1,8 +1,14 @@
 <div>
-  <div class="flex row-span-2 px-4 mb-4">
+  <div class="flex row-span-2 px-4 mb-4 ml-4 mr-4">
     {{-- busqueda & filtrado--}}
     <div class='px-2 py-6'>
-    
+      
+      @if (session()->has('message'))
+      <div class="bg-green-300 text-green-700">
+        {{ session('message') }}
+      </div> 
+      @endif
+
       <div class="px-2 py-2">
         <x-jet-input type='text' wire:model='busqueda' placeholder='Búsqueda'/>
 
@@ -20,7 +26,8 @@
       </div>
   
 
-    <div class="grid py-2 px-2">
+    
+      <div class="grid py-2 px-2">
       @foreach ($categorias as $categoria)
         <div class="py-2">
           <x-jet-button wire:click="filtroCategoria('{{$categoria->categoria}}')">{{$categoria->categoria}}</x-jet-button>
@@ -29,8 +36,6 @@
     </div>
 
     </div>
-    
-
     <div class="grid py-2 px-2">
     
       {{-- catálogo --}}
@@ -106,7 +111,9 @@
                 <option value="{{$i+1}}">{{$i+1}}</option>
               @endfor
             </select>
-          </div>    
+          </div>
+         
+              
       </x-slot>
 
       <x-slot name='footer'>
@@ -127,9 +134,6 @@
           @endif
           @if ($prenda_stock>0)
             <x-jet-danger-button wire:click="agregar_carrito()" wire:loading.attr="disabled">Agregar al carrito</x-jet-danger-button>
-            <div class="alert alert-success">
-              {{ session('message') }}
-          </div>
           @endif
         </div>
       </x-slot>
@@ -181,13 +185,13 @@
                 </div>
                 <div class="flex justify-between">
                   <x-jet-label class="px-1">Largo: </x-jet-label>
-                  <x-jet-input wire:model='hombros' id='largo' placeholder="Largo"></x-jet-input>
-                  @error('hombros')
+                  <x-jet-input wire:model='largo' id='largo' placeholder="Largo"></x-jet-input>
+                  @error('largo')
                     <small>{{$message}}</small>
                   @enderror
                 </div>
                 <br>
-                <h3 class="text-sm text-gray-700">Teléfono de contacto</h3>
+                <h3 class="text-sm text-gray-700">Contacto</h3>
                 <div class="flex justify-between">
                   <x-jet-label class="px-1">Teléfono: </x-jet-label>
                   <x-jet-input wire:model='telefono' id='telefono' maxlengh="9" placeholder="987654321"></x-jet-input>

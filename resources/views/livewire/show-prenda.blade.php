@@ -32,7 +32,7 @@
                     <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         Aún no tienes productos en tu carrito de compras...
                     </td>   
-                  </tr class="bg-white border-b">
+                  </tr class="bg-purple-200 border-b">
                   @endif
                     @foreach ($prendas as $prenda)
                         <tr class="bg-purple-200 border-b">
@@ -54,11 +54,12 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                   <x-jet-danger-button wire:click="eliminar_articulo({{$prenda}})">x</x-jet-danger-button>
                                 </td>                
-                          </tr class="bg-white border-b">
+                          </tr class="bg-purple-200 border-b">
                           <div class="hidden">
                             {{$total += $prenda["precio_total"] }}
                           </div>
                     @endforeach
+                
                     <tr wire:model='total' class="bg-purple-200 border-b">
                       @if (!empty($prendas[0]))
                         <td  colspan="4" class="px-6 py-4 whitespace-nowrap  font-bold text-gray-900">
@@ -68,8 +69,8 @@
                           ${{number_format($total)}}
                         </td> 
                       @endif
-                    </tr class="bg-white border-b">
-                    <tr class="bg-purple-200 border-b">
+                    </tr class="bg-purple-200 border-b">
+                    <tr class="bg-white border-b">
                       @if (!empty($prendas[0]))
                         <td colspan="5" class="px-6 py-4 whitespace-nowrap  font-bold text-gray-900">
                           <x-jet-button wire:loading.attr="disabled" wire:click="pagar({{$prendas}}, {{$total}})">Pagar</x-jet-button>
@@ -80,7 +81,7 @@
                           <x-jet-button disabled>Pagar</x-jet-button>
                         </td> 
                       @endif
-                    </tr class="bg-purple-200 border-b">
+                    </tr class="bg-white border-b">
                 </tbody>
               </table>
             </div>
