@@ -68,7 +68,7 @@ return [
     |
     */
 
-    'app_url' => 'https://plantavoladora.herokuapp.com/',
+    'app_url' => 'https://plantavoladora.herokuapp.com',
 
     /*
     |--------------------------------------------------------------------------
